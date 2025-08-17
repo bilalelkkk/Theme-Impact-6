@@ -15,13 +15,13 @@
         "slide-1": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/shampoo-header.webp",
-            "mobile_image": "shopify://shop_images/pexels-karolina-grabowska-5241037_1.webp",
-            "content_max_width": 1200,
+            "image": "shopify://shop_images/NEW_Homepage_Desktop-_TOP_BANNER_copy_3_1900x_60b8e470-f148-4a14-9d1c-06303dd444ca.webp",
+            "mobile_image": "shopify://shop_images/NEW_Homepage_Mobile-_TOP_BANNER_copy_480x_0dddeb6a-a489-48d3-bb09-e4d01d98baff.webp",
+            "content_max_width": 640,
             "mobile_text_position": "place-self-center text-center",
             "desktop_text_position": "sm:place-self-center sm:text-center",
-            "subheading": "Filtrul care transformă apa robinetului în apă de izvor – sau banii înapoi!",
-            "title": "Gata cu Pielea Uscată și Păru!",
+            "subheading": "",
+            "title": "",
             "heading_tag": "h0",
             "button_text": "",
             "button_link": "",
@@ -29,7 +29,7 @@
             "button_background": "#ffffff",
             "button_text_color": "#000000",
             "overlay_color": "#000000",
-            "overlay_opacity": 30,
+            "overlay_opacity": 15,
             "background": "",
             "background_gradient": ""
           }
@@ -54,8 +54,8 @@
       "type": "scrolling-text",
       "settings": {
         "full_width": true,
-        "text": "99% clor eliminat - 0,001 mm filtrare - 92% mai puțină încrețire",
-        "text_size": "large",
+        "text": "Aloe Vera + vitamina E –  Formulă hidratantă, care nu usucă",
+        "text_size": "xsmall",
         "text_style": "fill",
         "scrolling_mode": "auto",
         "scrolling_speed": 5,
@@ -71,14 +71,14 @@
         "subheading_beh4zU": {
           "type": "subheading",
           "settings": {
-            "text": "Revoluționează-ți experiența la duș!"
+            "text": "Revoluționează-ți experiența la ruj!"
           }
         },
         "heading_XjtBfc": {
           "type": "heading",
           "settings": {
-            "text": "CALITATE SUPERIOARĂ",
-            "heading_tag": "h1",
+            "text": "Rezistență întreaga zi, ca un tatuaj de culoare.",
+            "heading_tag": "h3",
             "text_color": "",
             "gradient": ""
           }
@@ -86,7 +86,7 @@
         "richtext_6y8XLR": {
           "type": "richtext",
           "settings": {
-            "content": "<p>Bun venit la Filterbaby – unde fiecare picătură de apă înseamnă piele catifelată și păr strălucitor. Cu filtrele noastre inovatoare, aducem puritatea apei de izvor în casa ta.</p><p><strong>De ce să ne alegi?</strong><br/>✔ 99% eliminare clor și calcar<br/>✔ Instalare în 3 minute – fără expert<br/>✔ Peste 50.000 clienți mulțumiți</p>"
+            "content": "<p>Tehnologia noastră brevetată<em>Liquid Blading</em>infuzează pigmenții în stratul superior al buzelor, apoi îi sigilează, astfel încât culoarea să nu se estompeze sau să se transfere ore în șir.</p>"
           }
         }
       },
@@ -110,20 +110,20 @@
         "1664424230c4756b0e-0": {
           "type": "subheading",
           "settings": {
-            "text": "Bun venit în lumea apei pure!"
+            "text": ""
           }
         },
         "1664424230c4756b0e-1": {
           "type": "heading",
           "settings": {
-            "text": "FILTRU DE DUȘ REVOLUȚIONAR",
+            "text": "Laxo Lip Stain",
             "heading_tag": "h1"
           }
         },
         "1664424230c4756b0e-2": {
           "type": "richtext",
           "settings": {
-            "content": "<p>Aquafiltr Pro transformă apa robinetului într-un izvor de hidratare. Spune adio pielii uscate și părului lipsit de viață.</p>"
+            "content": "<p><br/>Este noua generație de produse pentru buze. Formula sa peel-off oferă culoare intensă și de lungă durată, în timp ce hidratează și îngrijește buzele.</p>"
           }
         }
       },
@@ -137,8 +137,6 @@
         "allow_transparent_header": false,
         "enable_parallax": false,
         "image_size": "md",
-        "image": "shopify://shop_images/pexels-timmossholder-1049687.jpg",
-        "mobile_image": "shopify://shop_images/pexels-timmossholder-1049687.jpg",
         "mobile_text_position": "place-self-center text-center",
         "desktop_text_position": "sm:place-self-center sm:text-center",
         "text_color": "#ffffff",
@@ -154,7 +152,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Ioan***",
-            "content": "Sincer să fiu, Filtrul chiar oprește impuritățile – se vede în cartuș după câteva săptămâni. Sunt mulțumit pe deplin.",
+            "content": "Am fost sceptică la început, dar chiar rezistă toată ziua. Îl aplic dimineața și seara încă arată impecabil. Plus că nu-mi usucă buzele deloc.",
             "show_rating": true,
             "rating": 5
           }
@@ -164,7 +162,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Pop ***",
-            "content": "Nu credema că un simplu filtru poate face o așa diferență. Pielea nu mai e uscată după duș. O să mai cumpăr unul pentru părinți.",
+            "content": "Este exact ce căutam! Niciun ruj nu rezista la mine, dar acesta chiar nu se șterge. L-am purtat la o nuntă și arăta perfect până dimineața.",
             "show_rating": true,
             "rating": 5
           }
@@ -174,7 +172,7 @@
           "settings": {
             "logo_width": 100,
             "author": "Violeta ***",
-            "content": "Pentru mine, Folosesc Aquafiltr de 2 luni și se simte o mare diferență la duș. Îl voi recomanda și altora.",
+            "content": "Îmi plac culorile, sunt intense și naturale în același timp. Singurul minus e că trebuie să aștepți câteva minute să se usuce, dar merită. Recomand!",
             "show_rating": true,
             "rating": 5
           }
