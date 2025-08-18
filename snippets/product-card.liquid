@@ -157,6 +157,11 @@ Supported variables
         <span class="product-card__title"><a href="{{ product.url }}" class="bold" data-instant>{{ product.title }}</a></span>
       {%- endif -%}
 
+<!-- Start of Judge.me code -->
+  <div class='jdgm-widget jdgm-preview-badge'>
+    {{ product.metafields.judgeme.badge }}
+  </div>
+<!-- End of Judge.me code -->
       {%- render 'price-list', product: product, text_alignment: text_alignment -%}
     </div>
 
