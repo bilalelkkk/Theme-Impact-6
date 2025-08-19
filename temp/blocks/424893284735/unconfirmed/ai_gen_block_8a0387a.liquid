@@ -1,6 +1,417 @@
+{% doc %}
+  @prompt
+    Készitsd egy clor wticher opciot 2 sorban hogy 2 külön terméket tudjon  hozzá adni.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-color-switcher-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-color-switcher-row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+    background-color: {{ block.settings.item_background_color }};
+  }
+
+  .ai-color-switcher-product-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .ai-color-switcher-image-{{ ai_gen_id }} {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .ai-color-switcher-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-color-switcher-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-color-switcher-placeholder-{{ ai_gen_id }} svg {
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+  }
+
+  .ai-color-switcher-info-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-color-switcher-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 4px;
+  }
+
+  .ai-color-switcher-price-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.price_color }};
+    margin: 0;
+  }
+
+  .ai-color-switcher-colors-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }} {
+    width: {{ block.settings.color_size }}px;
+    height: {{ block.settings.color_size }}px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }}:hover {
+    transform: scale(1.1);
+    border-color: {{ block.settings.hover_border_color }};
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }}.active {
+    border-color: {{ block.settings.active_border_color }};
+    box-shadow: 0 0 0 2px {{ block.settings.active_border_color }}40;
+  }
+
+  .ai-color-switcher-empty-{{ ai_gen_id }} {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-color-switcher-row-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .ai-color-switcher-colors-{{ ai_gen_id }} {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<color-switcher-{{ ai_gen_id }} class="ai-color-switcher-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% for i in (1..2) %}
+    {% liquid
+      assign product_key = 'product_' | append: i
+      assign color1_key = 'product_' | append: i | append: '_color_1'
+      assign color2_key = 'product_' | append: i | append: '_color_2'
+      assign color3_key = 'product_' | append: i | append: '_color_3'
+      assign color4_key = 'product_' | append: i | append: '_color_4'
+      
+      assign product = block.settings[product_key]
+      assign color1 = block.settings[color1_key]
+      assign color2 = block.settings[color2_key]
+      assign color3 = block.settings[color3_key]
+      assign color4 = block.settings[color4_key]
+    %}
+
+    <div class="ai-color-switcher-row-{{ ai_gen_id }}" data-row="{{ i }}">
+      {% if product != blank %}
+        <div class="ai-color-switcher-product-{{ ai_gen_id }}">
+          <div class="ai-color-switcher-image-{{ ai_gen_id }}">
+            {% if product.featured_image %}
+              <img
+                src="{{ product.featured_image | image_url: width: 120 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                loading="lazy"
+                width="120"
+                height="120"
+              >
+            {% else %}
+              <div class="ai-color-switcher-placeholder-{{ ai_gen_id }}">
+                {{ 'product-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="ai-color-switcher-info-{{ ai_gen_id }}">
+            <h3 class="ai-color-switcher-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+            <p class="ai-color-switcher-price-{{ ai_gen_id }}">{{ product.price | money }}</p>
+          </div>
+        </div>
+
+        <div class="ai-color-switcher-colors-{{ ai_gen_id }}">
+          {% if color1 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }} active"
+              style="background-color: {{ color1 }};"
+              data-color="{{ color1 }}"
+              data-product-id="{{ product.id }}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color1 }} color"
+            ></button>
+          {% endif %}
+          
+          {% if color2 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color2 }};"
+              data-color="{{ color2 }}"
+              data-product-id="{{ product.id }}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color2 }} color"
+            ></button>
+          {% endif %}
+          
+          {% if color3 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color3 }};"
+              data-color="{{ color3 }}"
+              data-product-id="{{ product.id }}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color3 }} color"
+            ></button>
+          {% endif %}
+          
+          {% if color4 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color4 }};"
+              data-color="{{ color4 }}"
+              data-product-id="{{ product.id }}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color4 }} color"
+            ></button>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="ai-color-switcher-empty-{{ ai_gen_id }}">
+          Add a product for row {{ i }}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</color-switcher-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ColorSwitcher{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.colorButtons = this.querySelectorAll('.ai-color-switcher-color-{{ ai_gen_id }}');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.colorButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            const row = e.target.dataset.row;
+            const color = e.target.dataset.color;
+            
+            const rowButtons = this.querySelectorAll(`[data-row="${row}"].ai-color-switcher-color-{{ ai_gen_id }}`);
+            rowButtons.forEach(btn => btn.classList.remove('active'));
+            
+            e.target.classList.add('active');
+            
+            this.dispatchEvent(new CustomEvent('colorChanged', {
+              detail: {
+                row: row,
+                color: color,
+                productId: e.target.dataset.productId
+              }
+            }));
+          });
+        });
+      }
+    }
+
+    customElements.define('color-switcher-{{ ai_gen_id }}', ColorSwitcher{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Color switcher",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Item background color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "label": "Item border radius",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Color options"
+    },
+    {
+      "type": "range",
+      "id": "color_size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Color button size",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "hover_border_color",
+      "label": "Hover border color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "active_border_color",
+      "label": "Active border color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Product 1"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Product"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_1",
+      "label": "Color 1",
+      "default": "#ff0000"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_2",
+      "label": "Color 2",
+      "default": "#00ff00"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_3",
+      "label": "Color 3",
+      "default": "#0000ff"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_4",
+      "label": "Color 4"
+    },
+    {
+      "type": "header",
+      "content": "Product 2"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Product"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_1",
+      "label": "Color 1",
+      "default": "#ff6b6b"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_2",
+      "label": "Color 2",
+      "default": "#4ecdc4"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_3",
+      "label": "Color 3",
+      "default": "#45b7d1"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_4",
+      "label": "Color 4"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color switcher"
+    }
+  ]
+}
 {% endschema %}
