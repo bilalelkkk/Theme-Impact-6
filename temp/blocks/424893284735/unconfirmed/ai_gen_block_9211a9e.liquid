@@ -1,6 +1,701 @@
+{% doc %}
+  @prompt
+    Készitsd egy clor wticher opciot 2 sorban hogy 2 külön terméket tudjon  hozzá adni., kösd össze a termék oldaal hogy müködjön
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-color-switcher-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-color-switcher-row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid {{ block.settings.border_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+    background-color: {{ block.settings.item_background_color }};transition: all 0.3s ease;
+  }
+
+  .ai-color-switcher-row-{{ ai_gen_id }}:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-color-switcher-product-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .ai-color-switcher-image-{{ ai_gen_id }} {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .ai-color-switcher-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;transition: transform 0.3s ease;
+  }
+
+  .ai-color-switcher-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-color-switcher-placeholder-{{ ai_gen_id }} svg {
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+  }
+
+  .ai-color-switcher-info-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-color-switcher-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 4px;
+  }
+
+  .ai-color-switcher-price-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.price_color }};
+    margin: 0;
+  }
+
+  .ai-color-switcher-colors-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }} {
+    width: {{ block.settings.color_size }}px;
+    height: {{ block.settings.color_size }}px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }}:hover {
+    transform: scale(1.1);
+    border-color: {{ block.settings.hover_border_color }};
+  }
+
+  .ai-color-switcher-color-{{ ai_gen_id }}.active {
+    border-color: {{ block.settings.active_border_color }};
+    box-shadow: 0 0 0 2px {{ block.settings.active_border_color }}40;
+  }
+
+  .ai-color-switcher-actions-{{ ai_gen_id }} {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .ai-color-switcher-button-{{ ai_gen_id }} {
+    padding: 8px 16px;
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .ai-color-switcher-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    transform: translateY(-1px);
+  }
+
+  .ai-color-switcher-cart-button-{{ ai_gen_id }} {
+    background-color: {{ block.settings.cart_button_color }};}
+
+  .ai-color-switcher-cart-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.cart_button_hover_color }};
+  }
+
+  .ai-color-switcher-empty-{{ ai_gen_id }} {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+  }
+
+  .ai-color-switcher-variant-info-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.variant_text_color }};
+    margin-top: 2px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-color-switcher-row-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .ai-color-switcher-colors-{{ ai_gen_id }} {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .ai-color-switcher-actions-{{ ai_gen_id }} {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}<color-switcher-{{ ai_gen_id }} class="ai-color-switcher-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% for i in (1..2) %}
+    {% liquid
+      assign product_key = 'product_' | append: i
+      assign color1_key = 'product_' | append: i | append: '_color_1'
+      assign color2_key = 'product_' | append: i | append: '_color_2'
+      assign color3_key = 'product_' | append: i | append: '_color_3'
+      assign color4_key = 'product_' | append: i | append: '_color_4'
+      assign variant1_key = 'product_' | append: i | append: '_variant_1'
+      assign variant2_key = 'product_' | append: i | append: '_variant_2'
+      assign variant3_key = 'product_' | append: i | append: '_variant_3'
+      assign variant4_key = 'product_' | append: i | append: '_variant_4'
+      assign product = block.settings[product_key]
+      assign color1 = block.settings[color1_key]
+      assign color2 = block.settings[color2_key]
+      assign color3 = block.settings[color3_key]
+      assign color4 = block.settings[color4_key]
+      assign variant1 = block.settings[variant1_key]
+      assign variant2 = block.settings[variant2_key]
+      assign variant3 = block.settings[variant3_key]
+      assign variant4 = block.settings[variant4_key]
+    %}
+
+    <div class="ai-color-switcher-row-{{ ai_gen_id }}" data-row="{{ i }}">
+      {% if product != blank %}
+        <div class="ai-color-switcher-product-{{ ai_gen_id }}">
+          <div class="ai-color-switcher-image-{{ ai_gen_id }}">
+            {% assign current_image = product.featured_image %}
+            <img
+              src="{{ current_image | image_url: width: 120 }}"
+              alt="{{ current_image.alt | escape }}"
+              loading="lazy"
+              width="120"
+              height="120"
+              class="ai-color-switcher-main-image-{{ ai_gen_id }}"
+              data-row="{{ i }}"
+            >
+          </div>
+          <div class="ai-color-switcher-info-{{ ai_gen_id }}">
+            <h3 class="ai-color-switcher-title-{{ ai_gen_id }}">{{ product.title }}</h3>
+            <p class="ai-color-switcher-price-{{ ai_gen_id }}" data-row="{{ i }}">
+              {% if variant1 != blank %}
+                {{ variant1.price | money }}
+              {% else %}
+                {{ product.price | money }}
+              {% endif %}
+            </p>
+            <div class="ai-color-switcher-variant-info-{{ ai_gen_id }}" data-row="{{ i }}">
+              {% if variant1 != blank %}
+                {{ variant1.title }}
+              {% else %}
+                Default variant
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-color-switcher-colors-{{ ai_gen_id }}">
+          {% if color1 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }} active"
+              style="background-color: {{ color1 }};"
+              data-color="{{ color1 }}"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{% if variant1 != blank %}{{ variant1.id }}{% else %}{{ product.selected_or_first_available_variant.id }}{% endif %}"
+              data-variant-price="{% if variant1 != blank %}{{ variant1.price }}{% else %}{{ product.price }}{% endif %}"
+              data-variant-title="{% if variant1 != blank %}{{ variant1.title }}{% else %}Default variant{% endif %}"
+              data-variant-image="{% if variant1.featured_image %}{{ variant1.featured_image | image_url: width: 120 }}{% else %}{{ product.featured_image | image_url: width: 120 }}{% endif %}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color1 }} color"
+            ></button>
+          {% endif %}
+          {% if color2 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color2 }};"
+              data-color="{{ color2 }}"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{% if variant2 != blank %}{{ variant2.id }}{% else %}{{ product.selected_or_first_available_variant.id }}{% endif %}"
+              data-variant-price="{% if variant2 != blank %}{{ variant2.price }}{% else %}{{ product.price }}{% endif %}"
+              data-variant-title="{% if variant2 != blank %}{{ variant2.title }}{% else %}Default variant{% endif %}"
+              data-variant-image="{% if variant2.featured_image %}{{ variant2.featured_image | image_url: width: 120 }}{% else %}{{ product.featured_image | image_url: width: 120 }}{% endif %}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color2 }} color"
+            ></button>
+          {% endif %}
+          
+          {% if color3 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color3 }};"
+              data-color="{{ color3 }}"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{% if variant3 != blank %}{{ variant3.id }}{% else %}{{ product.selected_or_first_available_variant.id }}{% endif %}"
+              data-variant-price="{% if variant3 != blank %}{{ variant3.price }}{% else %}{{ product.price }}{% endif %}"
+              data-variant-title="{% if variant3 != blank %}{{ variant3.title }}{% else %}Default variant{% endif %}"
+              data-variant-image="{% if variant3.featured_image %}{{ variant3.featured_image | image_url: width: 120 }}{% else %}{{ product.featured_image | image_url: width: 120 }}{% endif %}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color3 }} color"
+            ></button>
+          {% endif %}
+          
+          {% if color4 != blank %}
+            <button
+              class="ai-color-switcher-color-{{ ai_gen_id }}"
+              style="background-color: {{ color4 }};"
+              data-color="{{ color4 }}"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{% if variant4 != blank %}{{ variant4.id }}{% else %}{{ product.selected_or_first_available_variant.id }}{% endif %}"
+              data-variant-price="{% if variant4 != blank %}{{ variant4.price }}{% else %}{{ product.price }}{% endif %}"
+              data-variant-title="{% if variant4 != blank %}{{ variant4.title }}{% else %}Default variant{% endif %}"
+              data-variant-image="{% if variant4.featured_image %}{{ variant4.featured_image | image_url: width: 120 }}{% else %}{{ product.featured_image | image_url: width: 120 }}{% endif %}"
+              data-row="{{ i }}"
+              aria-label="Select {{ color4 }} color"
+            ></button>
+          {% endif %}
+        </div>
+
+        <div class="ai-color-switcher-actions-{{ ai_gen_id }}">
+          <a
+            href="{{ product.url }}"
+            class="ai-color-switcher-button-{{ ai_gen_id }}"
+            data-row="{{ i }}"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Megtekintés
+          </a>
+          
+          <button
+            class="ai-color-switcher-button-{{ ai_gen_id }} ai-color-switcher-cart-button-{{ ai_gen_id }}"
+            data-variant-id="{% if variant1 != blank %}{{ variant1.id }}{% else %}{{ product.selected_or_first_available_variant.id }}{% endif %}"
+            data-row="{{ i }}"
+            data-add-to-cart
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="m1 1 4 4 2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            Kosárba
+          </button></div>
+      {% else %}
+        <div class="ai-color-switcher-empty-{{ ai_gen_id }}">
+          Add a product for row {{ i }}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</color-switcher-{{ ai_gen_id }}><script>
+  (function() {
+    class ColorSwitcher{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.colorButtons = this.querySelectorAll('.ai-color-switcher-color-{{ ai_gen_id }}');
+        this.cartButtons = this.querySelectorAll('[data-add-to-cart]');
+        this.viewButtons = this.querySelectorAll('a[data-row]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.colorButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            const row = e.target.dataset.row;
+            const color = e.target.dataset.color;
+            const variantId = e.target.dataset.variantId;
+            const variantPrice = e.target.dataset.variantPrice;
+            const variantTitle = e.target.dataset.variantTitle;
+            const variantImage = e.target.dataset.variantImage;
+            const productId = e.target.dataset.productId;
+            
+            const rowButtons = this.querySelectorAll(`[data-row="${row}"].ai-color-switcher-color-{{ ai_gen_id }}`);
+            rowButtons.forEach(btn => btn.classList.remove('active'));
+            
+            e.target.classList.add('active');
+            
+            this.updateProductInfo(row, variantPrice, variantTitle, variantImage, variantId, productId);
+            
+            this.dispatchEvent(new CustomEvent('colorChanged', {
+              detail: {
+                row: row,
+                color: color,
+                productId: productId,
+                variantId: variantId
+              }
+            }));
+          });
+        });
+
+        this.cartButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const variantId = e.target.dataset.variantId;
+            this.addToCart(variantId, button);
+          });
+        });
+      }
+
+      updateProductInfo(row, price, title, image, variantId, productId) {
+        const priceElement = this.querySelector(`[data-row="${row}"].ai-color-switcher-price-{{ ai_gen_id }}`);
+        const variantInfoElement = this.querySelector(`[data-row="${row}"].ai-color-switcher-variant-info-{{ ai_gen_id }}`);
+        const imageElement = this.querySelector(`[data-row="${row}"].ai-color-switcher-main-image-{{ ai_gen_id }}`);
+        const cartButton = this.querySelector(`[data-row="${row}"][data-add-to-cart]`);
+        const viewButton = this.querySelector(`a[data-row="${row}"]`);
+
+        if (priceElement && price) {
+          const formattedPrice = new Intl.NumberFormat('hu-HU', {
+            style: 'currency',
+            currency: 'HUF',
+            minimumFractionDigits: 0
+          }).format(price / 100);
+          priceElement.textContent = formattedPrice;
+        }
+
+        if (variantInfoElement && title) {
+          variantInfoElement.textContent = title;
+        }
+
+        if (imageElement && image) {
+          imageElement.src = image;
+        }
+
+        if (cartButton && variantId) {
+          cartButton.dataset.variantId = variantId;
+        }
+
+        if (viewButton && productId && variantId) {
+          const currentUrl = new URL(viewButton.href);
+          currentUrl.searchParams.set('variant', variantId);
+          viewButton.href = currentUrl.toString();
+        }
+      }
+
+      async addToCart(variantId, button) {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle></svg> Hozzáadás...';
+        button.disabled = true;
+
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: 1
+            })
+          });
+
+          if (response.ok) {
+            button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg> Hozzáadva!';
+            document.dispatchEvent(new CustomEvent('cart:updated'));
+            
+            setTimeout(() => {
+              button.innerHTML = originalText;
+              button.disabled = false;
+            }, 2000);
+          } else {
+            throw new Error('Failed to add to cart');
+          }
+        } catch (error) {
+          button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Hiba!';
+          
+          setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+          }, 2000);
+        }
+      }
+    }
+
+    customElements.define('color-switcher-{{ ai_gen_id }}', ColorSwitcher{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Color switcher",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Item background color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "variant_text_color",
+      "label": "Variant text color",
+      "default": "#999999"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "px",
+      "label": "Item border radius",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Color options"
+    },
+    {
+      "type": "range",
+      "id": "color_size",
+      "min": 20,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Color button size",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "hover_border_color",
+      "label": "Hover border color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "active_border_color",
+      "label": "Active border color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "View button color",
+      "default": "#007bff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "View button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "View button hover color",
+      "default": "#0056b3"
+    },
+    {
+      "type": "color",
+      "id": "cart_button_color",
+      "label": "Cart button color",
+      "default": "#28a745"
+    },
+    {
+      "type": "color",
+      "id": "cart_button_hover_color",
+      "label": "Cart button hover color",
+      "default": "#1e7e34"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Product1"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "Product"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_1",
+      "label": "Color 1",
+      "default": "#ff0000"
+    },
+    {
+      "type": "text",
+      "id": "product_1_variant_1",
+      "label": "Variant ID 1"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_2",
+      "label": "Color 2",
+      "default": "#00ff00"
+    },
+    {
+      "type": "text",
+      "id": "product_1_variant_2",
+      "label": "Variant ID 2"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_3",
+      "label": "Color 3",
+      "default": "#0000ff"
+    },
+    {
+      "type": "text",
+      "id": "product_1_variant_3",
+      "label": "Variant ID 3"
+    },
+    {
+      "type": "color",
+      "id": "product_1_color_4",
+      "label": "Color 4"
+    },
+    {
+      "type": "text",
+      "id": "product_1_variant_4",
+      "label": "Variant ID 4"
+    },
+    {
+      "type": "header",
+      "content": "Product 2"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "Product"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_1",
+      "label": "Color 1",
+      "default": "#ff6b6b"
+    },
+    {
+      "type": "text",
+      "id": "product_2_variant_1",
+      "label": "Variant ID 1"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_2",
+      "label": "Color 2",
+      "default": "#4ecdc4"
+    },
+    {
+      "type": "text",
+      "id": "product_2_variant_2",
+      "label": "Variant ID 2"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_3",
+      "label": "Color 3",
+      "default": "#45b7d1"
+    },
+    {
+      "type": "text",
+      "id": "product_2_variant_3",
+      "label": "Variant ID 3"
+    },
+    {
+      "type": "color",
+      "id": "product_2_color_4",
+      "label": "Color 4"
+    },
+    {
+      "type": "text",
+      "id": "product_2_variant_4",
+      "label": "Variant ID 4"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color switcher"
+    }
+  ]
+}
 {% endschema %}
